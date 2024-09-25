@@ -1,3 +1,4 @@
+import 'package:artical/core/failure.dart';
 import 'package:artical/core/use_case/use_case.dart';
 import 'package:artical/feature/artical/domain/entities/article_entity.dart';
 import 'package:artical/feature/artical/domain/repository/article_repository.dart';
@@ -31,12 +32,25 @@ void main() {
       );
 
       ///Act
-      when(()=> mockArticleRepository.getAllArticle())
-        .thenAnswer((_) async => Right(userArticle));
+      when(() => mockArticleRepository.getAllArticle())
+          .thenAnswer((_) async => Right(userArticle));
 
       final result = await articleUseCase.execute(const NoParameter());
+
       /// Assert
       expect(result, equals(Right(userArticle)));
     });
+  });
+
+  test('should return a failure on error', () async {
+    ///Act
+    when(() => mockArticleRepository.getAllArticle()).thenAnswer(
+        (_) async => const Left(ServerFailure(message: 'There is no data')));
+
+    final result = await articleUseCase.execute(const NoParameter());
+
+    /// Assert
+    expect(
+        result, equals(const Left(ServerFailure(message: 'There is no data'))));
   });
 }
