@@ -8,10 +8,12 @@ abstract class ArticleRemoteDataSource {
 }
 
 class ArticleRemoteDataSourceImpl implements ArticleRemoteDataSource {
+  ArticleRemoteDataSourceImpl(this._dio);
+  final Dio _dio;
   @override
   Future<List<ArticleModel>> getAllArticle() async {
     final response =
-        await Dio().get('https://jsonplaceholder.typicode.com/posts?_page');
+        await _dio.get('https://jsonplaceholder.typicode.com/posts?_page');
     if (response.statusCode == 200) {
       return (response.data as List<dynamic>)
           .map(
