@@ -1,6 +1,6 @@
+import 'package:artical/core/server_failure.dart';
 import 'package:artical/feature/artical/data/data_source/article_remote_data_sourec.dart';
 import 'package:artical/feature/artical/data/model/article_model.dart';
-import 'package:artical/feature/artical/domain/entities/article_entity.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -16,9 +16,8 @@ void main() {
     articleRemoteDataSourceImpl = ArticleRemoteDataSourceImpl(mockDio);
   });
   group('Test article remote data source  ', () {
-    test('should return Article model when the response code is 200', () async{
+    test('should return Article model when the response code is 200', () async {
       //Arrange
-
       //Act
       when(
         () => mockDio.get('https://jsonplaceholder.typicode.com/posts?_page'),
@@ -60,7 +59,25 @@ void main() {
 
       //Assert
       expect(result, isA<List<ArticleModel>>());
+    });
 
+    test('should return status code not equal  200', () async {
+      //Arrange
+
+      when(() =>
+              mockDio.get('https://jsonplaceholder.typicode.com/posts?_page'))
+          .thenThrow(
+        () async => Response(
+          statusCode: 500,
+          requestOptions: RequestOptions(
+            path: 'https://jsonplaceholder.typicode.com/posts?_page',
+          ),
+        ),
+      );
+      // act
+      final result = articleRemoteDataSourceImpl.getAllArticle();
+      ///assert
+      expect(result, throwsA(isA<Exception>()));
     });
   });
 }

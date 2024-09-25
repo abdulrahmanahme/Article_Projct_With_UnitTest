@@ -43,6 +43,19 @@ void main() {
   });
 
   test('should return a failure on error', () async {
+    // Arrange
+    var userArticle = List.generate(
+      5,
+      (int index) => Article(
+        id: index,
+        userId: index,
+        title:
+            "sunt aut facere repellat provident occaecati excepturi optio reprehenderit",
+        body:
+            "quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto",
+      ),
+    );
+
     ///Act
     when(() => mockArticleRepository.getAllArticle()).thenAnswer(
         (_) async => const Left(ServerFailure(message: 'There is no data')));
@@ -50,9 +63,6 @@ void main() {
     final result = await articleUseCase.execute(const NoParameter());
 
     /// Assert
-    expect(
-        result, equals(const Left(ServerFailure(message: 'There is no data'))));
+    expect(result, equals(const Left(ServerFailure(message: 'There is no data'))));
   });
-
-  
 }

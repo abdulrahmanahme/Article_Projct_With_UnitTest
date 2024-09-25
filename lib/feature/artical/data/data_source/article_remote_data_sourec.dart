@@ -12,18 +12,19 @@ class ArticleRemoteDataSourceImpl implements ArticleRemoteDataSource {
   final Dio _dio;
   @override
   Future<List<ArticleModel>> getAllArticle() async {
-    final response =
-        await _dio.get('https://jsonplaceholder.typicode.com/posts?_page');
-    if (response.statusCode == 200) {
-      return (response.data as List<dynamic>)
-          .map(
-            (e) => ArticleModel.fromJson(e),
-          )
-          .toList();
-    } else {
-      throw ServerExtension(
-        errorMessageModel: ErrorMessageModel.fromJson(response.data),
-      );
+    try {
+      var response =
+          await _dio.get('https://jsonplaceholder.typicode.com/posts?_page');
+      if (response.statusCode == 200) {
+        return (response.data as List<dynamic>)
+            .map((json) => ArticleModel.fromJson(json))
+            .toList();
+      } else {
+        throw ServerExtension(errorMessageModel: ErrorMessageModel.fromJson(response.data));
+      }
+    } catch (error) {
+      throw Exception('There was an error: $error');
     }
+
   }
 }
