@@ -53,4 +53,6 @@ void main() {
     expect(
         result, equals(const Left(ServerFailure(message: 'There is no data'))));
   });
+
+  
 }
